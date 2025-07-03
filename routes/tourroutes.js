@@ -4,14 +4,14 @@ const {
   getSingleTour,
   AddTour,
   updatetour,
-  deleteTour
+  deleteTour,
+  aliasTopTours
  
 } = require('./../controller/tourcontroller');
 const router = express.Router();
 
-// router.param('id',checkId);
 
-
+router.route('/top-5-cheap').get(aliasTopTours,getAllTours)
 router.route('/').get(getAllTours).post(AddTour);
 router.route('/:id').get(getSingleTour).patch(updatetour).delete(deleteTour);
 
