@@ -1,3 +1,7 @@
+const User = require('../models/User.Model');
+const AppError = require('../utils/apperr');
+const catchAsync = require('../utils/catchasync');
+
 // exports.checkId = (req, res, next, val) => {
 //   console.log(`user id is ${val}`);
 
@@ -10,13 +14,17 @@
 //   next();
 // };
 
+exports.getAllusers = catchAsync(async (req, res,next) => {
+  const users = await User.find();
 
-exports.getAllusers = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'this route is not yet defined',
+  res.status(200).json({
+    status: 'success',
+    result: users.length,
+    data: {
+      users,
+    },
   });
-};
+})
 
 exports.Adduser = (req, res) => {
   res.status(500).json({
