@@ -1,22 +1,26 @@
 const express = require('express');
-const authController=require('./../controller/Auth.controller')
+const { protect } = require('../Controllers/Auth.Controller');
 
 const {
   getAllTours,
   getSingleTour,
-  AddTour,
-  updatetour,
+  addTour,
+  updateTour,
   deleteTour,
   aliasTopTours,
   getTourStats,
-  getMonthlyPlan
-} = require('./../controller/tourcontroller');
+  getMonthlyPlan,
+} = require('../Controllers/Tour.Controller');
+
 const router = express.Router();
 
+// Public routes
 router.route('/top-5-cheap').get(aliasTopTours, getAllTours);
 router.route('/tour-stats').get(getTourStats);
 router.route('/monthly-plan/:year').get(getMonthlyPlan);
-router.route('/').get(authController.protect,getAllTours).post(AddTour);
-router.route('/:id').get(getSingleTour).patch(updatetour).delete(deleteTour);
+
+// Protected + CRUD routes
+router.route('/').get(protect, getAllTours).post(addTour);
+router.route('/:id').get(getSingleTour).patch(updateTour).delete(deleteTour);
 
 module.exports = router;

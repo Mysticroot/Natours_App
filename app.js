@@ -1,39 +1,43 @@
 const express = require('express');
-const app = express();
 const morgan = require('morgan');
-const AppError=require('./utils/apperr')
-const globalerrHandler=require('./controller/errorController')
+const AppError = require('./Utils/AppError.Util');
+const globalErrorHandler = require('./Controllers/Error.Controller');
 
-const tourRouter = require('./routes/tourroutes');
-const userRouter = require('./routes/userroutes');
+const tourRouter = require('./Routes/Tour.Route');
+const userRouter = require('./Routes/User.Route');
 
+const app = express();
+
+// Body parser middleware
 app.use(express.json());
 
+// Logging middleware in development
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// Serve static assets
 app.use(express.static(`${__dirname}/public`));
 
+// Add timestamp to each request
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  // console.log(req.headers);
-  
   next();
 });
 
+// Mount API routers
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
+// Handle undefined routes
 app.use((req, res, next) => {
-  if (req.route) return next(); // matched some defined route
-
-  next(new AppError(`Can't find ${req.originalUrl} on this server..`, 404));
+  next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
 });
 
+// Global error handling middleware
+app.use(globalErrorHandler);
 
-app.use(globalerrHandler);
-
+// Debug current environment
 console.log('NODE_ENV:', process.env.NODE_ENV);
 
 module.exports = app;

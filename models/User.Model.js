@@ -1,41 +1,40 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const bcryptjs = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
-const Userschema = new mongoose.Schema({
+// User schema definition
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
     unique: true,
     trim: true,
-    maxlength: [40, 'too long'],
-    minlength: [10, 'too short'],
+    maxlength: [40, 'Name too long'],
+    minlength: [10, 'Name too short'],
   },
   email: {
     type: String,
     required: true,
     unique: true,
     lowercase: true,
-    validate: [validator.isEmail, 'Please provide a valid email'],
+    validate: [validator.isEmail, 'Please provide a valid email address'],
   },
-  photo: {
-    type: String,
-  },
+  photo: String,
   password: {
     type: String,
     required: true,
-    minlength: [8, 'too short'],
-    select: false,
+    minlength: [8, 'Password too short'],
+    select: false, // Do not return password in queries
   },
   passwordConfirm: {
     type: String,
     required: true,
     validate: {
-      validator: function (el) {
-        // this only works on CREATE and SAVE
-        return el === this.password;
+      // Only runs on create/save
+      validator: function (val) {
+        return val === this.password;
       },
-      message: 'Passwords are not the same',
+      message: 'Passwords do not match',
     },
   },
   passwordChangedAt: {
@@ -44,35 +43,34 @@ const Userschema = new mongoose.Schema({
   },
 });
 
-Userschema.pre('save', async function (next) {
-  if (!this.isModified('password') || !this.isNew) {
-    return next();
-  }
-  this.password = await bcryptjs.hash(this.password, 12);
+// Hash password before saving (if modified)
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
 
-  this.passwordConfirm = undefined;
+  this.password = await bcrypt.hash(this.password, 12);
+  this.passwordConfirm = undefined; // Do not store confirm field in DB
   next();
 });
 
-Userschema.methods.correctPassword = async function (
+// Compare login password with hashed DB password
+userSchema.methods.correctPassword = async function (
   candidatePassword,
-  userPassword,
+  storedHashedPassword,
 ) {
-  return await bcryptjs.compare(candidatePassword, userPassword);
+  return await bcrypt.compare(candidatePassword, storedHashedPassword);
 };
 
-Userschema.methods.changedPasswordAfter =  function (JWTTimestamp) {
+// Check if password was changed after the token was issued
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
-    const passwordChangedAt = parseInt(
+    const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
       10,
     );
-    return JWTTimestamp < passwordChangedAt;
+    return JWTTimestamp < changedTimestamp;
   }
-
   return false;
 };
 
-const User = new mongoose.model('User', Userschema);
-
+const User = mongoose.model('User', userSchema);
 module.exports = User;
