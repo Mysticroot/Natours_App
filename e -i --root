@@ -1,0 +1,43 @@
+[33mcommit 89866d6c798af8f54853e997d7505d9360e19f5e[m
+Author: Aashu patil <aashupatil218@gmail.com>
+Date:   Thu Jul 3 14:06:15 2025 +0530
+
+    password blanked
+
+[1mdiff --git a/config.env b/config.env[m
+[1mdeleted file mode 100644[m
+[1mindex 349249f..0000000[m
+[1m--- a/config.env[m
+[1m+++ /dev/null[m
+[36m@@ -1,9 +0,0 @@[m
+[31m-DATABASE_PASSWORD=BYOJHjIxpPhggAJk[m
+[31m-mongosh "mongodb+srv://cluster0.m0gif5h.mongodb.net/" --apiVersion 1 --username sickd80[m
+[31m-[m
+[31m-DATABASE=mongodb+srv://sickd80:<PASSWORD>@cluster0.m0gif5h.mongodb.net/Natours?retryWrites=true&w=majority&appName=Cluster0[m
+[31m-[m
+[31m-NODE_ENV=development[m
+[31m-USER=ADMIN[m
+[31m-PASSWORD=ADMIN@123[m
+[31m-PORT=3000[m
+
+[33mcommit 35482d774406840a26bac57577459224a2d145c7[m
+Author: Aashu patil <aashupatil218@gmail.com>
+Date:   Thu Jul 3 13:56:25 2025 +0530
+
+    filtering using url done
+
+[1mdiff --git a/config.env b/config.env[m
+[1mnew file mode 100644[m
+[1mindex 0000000..349249f[m
+[1m--- /dev/null[m
+[1m+++ b/config.env[m
+[36m@@ -0,0 +1,9 @@[m
+[32m+[m[32mDATABASE_PASSWORD=BYOJHjIxpPhggAJk[m
+[32m+[m[32mmongosh "mongodb+srv://cluster0.m0gif5h.mongodb.net/" --apiVersion 1 --username sickd80[m
+[32m+[m
+[32m+[m[32mDATABASE=mongodb+srv://sickd80:<PASSWORD>@cluster0.m0gif5h.mongodb.net/Natours?retryWrites=true&w=majority&appName=Cluster0[m
+[32m+[m
+[32m+[m[32mNODE_ENV=development[m
+[32m+[m[32mUSER=ADMIN[m
+[32m+[m[32mPASSWORD=ADMIN@123[m
+[32m+[m[32mPORT=3000[m
