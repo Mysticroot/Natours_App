@@ -17,6 +17,14 @@ const handlevalidationError = (err) => {
   return new AppError(message, 400);
 };
 
+const handleinvalidSignatureError = (err) => {
+  return new AppError('Invalid token. Please log in again!', 401);
+};
+
+const handletokenExpiredError = (err) => {
+  return new AppError('Your token has expired! Please log in again.', 401);
+};
+
 const sendErrorDev = (err, res) => {
   res.status(err.statuscode).json({
     status: err.status,
@@ -33,7 +41,7 @@ const sendErrorProd = (err, res) => {
       message: err.message,
     });
   } else {
-    console.error('ERROR 💥', err);
+    console.log('ERROR 💥', err.name);
     res.status(500).json({
       status: 'error',
       message: 'Something went very wrong',
@@ -53,6 +61,10 @@ module.exports = (err, req, res, next) => {
     if (error.name === 'CastError') error = handlecastError(error);
     if (error.code === 11000) error = handleduplicateFields(error);
     if (error.name === 'ValidationError') error = handlevalidationError(error);
+    if (error.name === 'JsonWebTokenError')
+      error = handleinvalidSignatureError(error);
+    if (error.name === 'TokenExpiredError')
+      error = handletokenExpiredError(error);
     sendErrorProd(error, res);
   }
 };
