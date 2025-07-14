@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 // User schema definition
 const userSchema = new mongoose.Schema({
@@ -22,7 +23,6 @@ const userSchema = new mongoose.Schema({
   photo: String,
   password: {
     type: String,
-    required: true,
     minlength: [8, 'Password too short'],
     select: false, // Do not return password in queries
   },
@@ -41,14 +41,28 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  role: {
+    type: String,
+    enum: ['user', 'guide', 'admin', 'lead-guide'],
+    default: 'user',
+  },
+  passwordResetToken: String,
+  passwordResetExpires: Date,
 });
 
 // Hash password before saving (if modified)
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password') || this.isNew) return next();
+  if (!this.isModified('password')) return next(); // ✅ Only skip if NOT modified
 
   this.password = await bcrypt.hash(this.password, 12);
   this.passwordConfirm = undefined; // Do not store confirm field in DB
+  next();
+});
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
@@ -70,6 +84,24 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     return JWTTimestamp < changedTimestamp;
   }
   return false;
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  // Generate random token
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  // Hash the token and set it to the passwordResetToken field
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  console.log(resetToken, this.passwordResetToken);
+
+  // Set expiration time for the reset token
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  return resetToken; // Return the plain token for sending to user
 };
 
 const User = mongoose.model('User', userSchema);
