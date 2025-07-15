@@ -19,13 +19,36 @@ class ApiFeatures {
 
   // Apply sorting if specified, else default to -createdAt
   sort() {
+
+
+    // if (this.queryParams.sort) {
+    //   const sortBy = this.queryParams.sort.split(',').join(' ');
+    //   this.query = this.query.sort(sortBy);
+    // } else {
+    //   this.query = this.query.sort('-createdAt');
+    // }
+    // return this;
+
     if (this.queryParams.sort) {
-      const sortBy = this.queryParams.sort.split(',').join(' ');
+      let sortBy;
+
+      if (Array.isArray(this.queryParams.sort)) {
+        // Handles cases like ?sort=duration&sort=price
+        sortBy = this.queryParams.sort.join(' ');
+      } else if (typeof this.queryParams.sort === 'string') {
+        // Handles cases like ?sort=duration,price
+        sortBy = this.queryParams.sort.split(',').join(' ');
+      } else {
+        // Fallback in case of unexpected types
+        sortBy = '-createdAt';
+      }
+
       this.query = this.query.sort(sortBy);
     } else {
       this.query = this.query.sort('-createdAt');
     }
     return this;
+
   }
 
   // Limit fields returned in response
