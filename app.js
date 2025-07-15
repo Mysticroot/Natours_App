@@ -4,6 +4,8 @@ const AppError = require('./Utils/AppError.Util');
 const globalErrorHandler = require('./Controllers/Error.Controller');
 const rateLimit=require('express-rate-limit')
 const helmet=require('helmet')
+const mongoSanitize=require('express-mongo-sanitize')
+const xss=require('xss-clean')
 
 const tourRouter = require('./Routes/Tour.Route');
 const userRouter = require('./Routes/User.Route');
@@ -15,6 +17,15 @@ app.use(helmet());
 app.use(express.json({
   limit:'10kb'
 }));
+
+
+//data sanitization against sql query injection 
+app.use(mongoSanitize());
+
+//data sanitization against xss
+app.use(xss());
+
+
 
 // Logging middleware in development
 if (process.env.NODE_ENV === 'development') {
