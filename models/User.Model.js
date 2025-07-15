@@ -48,7 +48,20 @@ const userSchema = new mongoose.Schema({
   },
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active:{
+    type:Boolean,
+    select:false,
+    default:true
+    
+  }
 });
+
+userSchema.pre(/^find/, async function (next) {
+  
+  this.find({active:{ $ne:false}}) ;
+  next();
+});
+
 
 // Hash password before saving (if modified)
 userSchema.pre('save', async function (next) {

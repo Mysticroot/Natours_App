@@ -8,6 +8,7 @@ const {
   updateUser,
   deleteUser,
   updateMe,
+  deleteMe
 } = require('../Controllers/User.Controller');
 const User = require('../Models/User.Model');
 
@@ -27,6 +28,7 @@ router.patch(
 );
 
 router.patch('/updateMe', authController.protect,updateMe);
+router.delete('/deleteMe', authController.protect,deleteMe);
 // User routes
 router.route('/').get(getAllUsers).post(addUser);
 
