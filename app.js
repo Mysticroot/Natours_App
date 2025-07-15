@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const AppError = require('./Utils/AppError.Util');
 const globalErrorHandler = require('./Controllers/Error.Controller');
+const rateLimit=require('express-rate-limit')
 
 const tourRouter = require('./Routes/Tour.Route');
 const userRouter = require('./Routes/User.Route');
@@ -16,6 +17,14 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+
+const limiter= rateLimit({
+  max:100,
+  windowMs:60*60*1000,
+  message: 'Too many request from this IP,try after 1 hour!'
+})
+
+app.use('/api/',limiter)
 // Serve static assets
 app.use(express.static(`${__dirname}/public`));
 
