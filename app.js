@@ -3,14 +3,18 @@ const morgan = require('morgan');
 const AppError = require('./Utils/AppError.Util');
 const globalErrorHandler = require('./Controllers/Error.Controller');
 const rateLimit=require('express-rate-limit')
+const helmet=require('helmet')
 
 const tourRouter = require('./Routes/Tour.Route');
 const userRouter = require('./Routes/User.Route');
 
 const app = express();
 
+app.use(helmet());
 // Body parser middleware
-app.use(express.json());
+app.use(express.json({
+  limit:'10kb'
+}));
 
 // Logging middleware in development
 if (process.env.NODE_ENV === 'development') {
@@ -25,6 +29,7 @@ const limiter= rateLimit({
 })
 
 app.use('/api/',limiter)
+
 // Serve static assets
 app.use(express.static(`${__dirname}/public`));
 
