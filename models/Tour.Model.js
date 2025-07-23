@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
+const User=require('./User.Model');
+const { promises } = require('nodemailer/lib/xoauth2');
 
 // Tour schema definition
 const tourSchema = new mongoose.Schema(
@@ -75,12 +77,56 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    guides:[
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: true,
+      }
+    ],
+    startLocation:{
+       type:{
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+       },
+        coordinates: [Number],
+        address: String,
+        description: String,
+    },
+    locations: [
+      { type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },  
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },]
   },
+
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: false },
   }
 );
+
+
+// tourSchema.pre('save',async function (next) {
+//  const guidespromises=this.guides.map((id)=>  User.findById(id));
+//  this.guides=await Promise.all(guidespromises);
+//   next();
+// });
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({path:'guides',
+    select: '-__v -passwordChangedAt  ',
+  })
+  next();
+});
+
 
 // Middleware: Exclude secret tours in all `find` queries
 tourSchema.pre(/^find/, function (next) {
