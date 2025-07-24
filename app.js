@@ -10,6 +10,7 @@ const hpp = require('hpp');
 
 const tourRouter = require('./Routes/Tour.Route');
 const userRouter = require('./Routes/User.Route');
+const reviewRouter = require('./Routes/Review.Route');
 
 const app = express();
 
@@ -66,6 +67,7 @@ app.use((req, res, next) => {
 // Mount API routers
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 // Handle undefined routes
 app.use((req, res, next) => {
