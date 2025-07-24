@@ -105,6 +105,10 @@ const tourSchema = new mongoose.Schema(
         description: String,
         day: Number,
       },]
+      // reviews:{
+      //   type: mongoose.Schema.ObjectId,
+      //   ref:'Review'
+      // }
   },
 
   {
@@ -113,6 +117,13 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+
+//virtual populate
+tourSchema.virtual('reviews',{
+  ref: 'Review',
+  foreignField: 'tour',
+  localField:"_id"
+})
 
 // tourSchema.pre('save',async function (next) {
 //  const guidespromises=this.guides.map((id)=>  User.findById(id));

@@ -1,6 +1,7 @@
 const express = require('express');
 const authController = require('../Controllers/Auth.Controller');
 
+
 const {
   getAllUsers,
   getSingleUser,
