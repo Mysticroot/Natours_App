@@ -2,6 +2,7 @@ const Tour = require('../Models/Tour.Model');
 const ApiFeatures = require('../Utils/Api.Features'); // Handles filtering, sorting, etc.
 const AppError = require('../Utils/AppError.Util');
 const catchAsync = require('../Utils/CatchAsync.Util');
+const factory=require('./Handler.factory')
 
 // Pre-configure query parameters for top 3 tours
 exports.aliasTopTours = (req, res, next) => {
@@ -53,30 +54,32 @@ exports.addTour = catchAsync(async (req, res, next) => {
 });
 
 // Update an existing tour by ID
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+exports.updateTour = factory.updateOne(Tour);
+// exports.updateTour = catchAsync(async (req, res, next) => {
+//   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+//     new: true,
+//     runValidators: true,
+//   });
 
-  if (!updatedTour)
-    return next(new AppError('No tour found with that ID', 404));
+//   if (!updatedTour)
+//     return next(new AppError('No tour found with that ID', 404));
 
-  res.status(200).json({
-    status: 'success',
-    data: { tour: updatedTour },
-  });
-});
+//   res.status(200).json({
+//     status: 'success',
+//     data: { tour: updatedTour },
+//   });
+// });
 
 // Delete a tour by ID
-exports.deleteTour = catchAsync(async (req, res, next) => {
-  const deletedTour = await Tour.findByIdAndDelete(req.params.id);
+exports.deleteTour=factory.deleteOne(Tour);
+// exports.deleteTour = catchAsync(async (req, res, next) => {
+//   const deletedTour = await Tour.findByIdAndDelete(req.params.id);
 
-  if (!deletedTour)
-    return next(new AppError('No tour found with that ID', 404));
+//   if (!deletedTour)
+//     return next(new AppError('No tour found with that ID', 404));
 
-  res.status(204).json({ status: 'success' });
-});
+//   res.status(204).json({ status: 'success' });
+// });
 
 // Get aggregated tour statistics (grouped by difficulty)
 exports.getTourStats = catchAsync(async (req, res, next) => {

@@ -1,6 +1,7 @@
 const User = require('../Models/User.Model');
 const AppError = require('../Utils/AppError.Util');
 const catchAsync = require('../Utils/CatchAsync.Util');
+const factory=require('./Handler.factory')
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
@@ -73,17 +74,7 @@ exports.getSingleUser = (req, res) => {
 };
 
 // Placeholder for updating a user – not implemented yet
-exports.updateUser = (req, res) => {
-  res.status(501).json({
-    status: 'error',
-    message: 'This route is not yet implemented.',
-  });
-};
+exports.updateUser = factory.updateOne(User);
 
 // Placeholder for deleting a user – not implemented yet
-exports.deleteUser = (req, res) => {
-  res.status(501).json({
-    status: 'error',
-    message: 'This route is not yet implemented.',
-  });
-};
+exports.deleteUser = factory.deleteOne(User);
