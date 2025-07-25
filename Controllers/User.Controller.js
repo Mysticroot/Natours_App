@@ -36,45 +36,28 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 
-exports.deleteMe=catchAsync(async (req,res,next)=>{
+// exports.deleteMe=catchAsync(async (req,res,next)=>{
 
-  await User.findByIdAndUpdate(req.user.id,{active:false})
+//   await User.findByIdAndUpdate(req.user.id,{active:false})
 
-  res.status(204).json({
-    status:"success",
-    data:null
-  })
-})
+//   res.status(204).json({
+//     status:"success",
+//     data:null
+//   })
+// })
 
 // Get all users from the database
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'success',
-    result: users.length,
-    data: { users },
-  });
-});
 
 // Placeholder for creating a user – not implemented yet
 exports.addUser = (req, res) => {
   res.status(501).json({
     status: 'error',
-    message: 'This route is not yet implemented.',
+    message: 'use sign up for creating user.',
   });
 };
 
 // Placeholder for getting a single user – not implemented yet
-exports.getSingleUser = (req, res) => {
-  res.status(501).json({
-    status: 'error',
-    message: 'This route is not yet implemented.',
-  });
-};
-
-// Placeholder for updating a user – not implemented yet
+exports.getAllUsers = factory.getAll(User);
+exports.getSingleUser = factory.getOne(User);
 exports.updateUser = factory.updateOne(User);
-
-// Placeholder for deleting a user – not implemented yet
 exports.deleteUser = factory.deleteOne(User);

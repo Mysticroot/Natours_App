@@ -5,7 +5,7 @@ const reviewRouter = require('../Routes/Review.Route');
 const {
   getAllTours,
   getSingleTour,
-  addTour,
+  createTour,
   updateTour,
   deleteTour,
   aliasTopTours,
@@ -32,7 +32,7 @@ router.route('/tour-stats').get(getTourStats);
 router.route('/monthly-plan/:year').get(getMonthlyPlan);
 
 // Protected + CRUD routes
-router.route('/').get(protect, getAllTours).post(addTour);
+router.route('/').get(protect, getAllTours).post(createTour);
 router
   .route('/:id')
   .get(getSingleTour)
