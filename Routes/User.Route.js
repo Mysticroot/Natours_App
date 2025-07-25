@@ -9,12 +9,15 @@ const {
   updateUser,
   deleteUser,
   updateMe,
+  deleteMe,
+  getMe,
 } = require('../Controllers/User.Controller');
 const User = require('../Models/User.Model');
 
 const router = express.Router();
 
 // Auth routes
+router.get('/me', authController.protect, getMe, getSingleUser);
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 
@@ -28,7 +31,7 @@ router.patch(
 );
 
 router.patch('/updateMe', authController.protect,updateMe);
-router.delete('/deleteMe', authController.protect,deleteUser);
+router.delete('/deleteMe', authController.protect,deleteMe);
 // User routes
 router.route('/').get(getAllUsers).post(addUser);
 
