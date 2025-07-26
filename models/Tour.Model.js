@@ -161,11 +161,11 @@ tourSchema.pre(/^find/, function (next) {
 });
 
 // Middleware: Exclude secret tours in aggregation queries
-tourSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  console.log(this);
-  next();
-});
+// tourSchema.pre('aggregate', function (next) {
+//   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+//   console.log(this);
+//   next();
+// });
 
 // Create and export Tour model
 const Tour = mongoose.model('Tour', tourSchema);
