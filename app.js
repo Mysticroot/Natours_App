@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const path = require('path');
 const AppError = require('./Utils/AppError.Util');
 const globalErrorHandler = require('./Controllers/Error.Controller');
 const rateLimit = require('express-rate-limit');
@@ -8,11 +9,16 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 
+
 const tourRouter = require('./Routes/Tour.Route');
 const userRouter = require('./Routes/User.Route');
 const reviewRouter = require('./Routes/Review.Route');
 
 const app = express();
+app.use(express.static(path.join(__dirname,'public')));
+
+// app.set('view engine', 'pug');
+// app.set('views',path.join(__dirname, 'views'));
 
 app.use(helmet());
 // Body parser middleware
@@ -31,7 +37,7 @@ app.use(
       'ratingsAverage',
       'maxGroupSize',
       'difficulty',
-      'price'
+      'price',
     ],
   }),
 );
@@ -56,13 +62,17 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // Serve static assets
-app.use(express.static(`${__dirname}/public`));
 
 // Add timestamp to each request
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
+
+
+// app.get('/', (req, res) => {
+//   res.status(200).render('base')});
+
 
 // Mount API routers
 app.use('/api/v1/tours', tourRouter);
