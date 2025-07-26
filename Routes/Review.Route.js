@@ -18,9 +18,9 @@ router
 router
   .route('/:id')
   .get(reviewController.getSingleReview)
-  .patch(authController.restrictTo('user,admin'), reviewController.updateReview)
+  .patch(authController.restrictTo('user','admin'), reviewController.updateReview)
   .delete(
-    authController.restrictTo('user,admin'),
+    authController.restrictTo('user','admin'),
     reviewController.deleteReview,
   );
 
