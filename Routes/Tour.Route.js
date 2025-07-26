@@ -11,6 +11,8 @@ const {
   aliasTopTours,
   getTourStats,
   getMonthlyPlan,
+  getToursWithin,
+  // getDistances,
 } = require('../Controllers/Tour.Controller');
 
 const router = express.Router();
@@ -23,6 +25,13 @@ router.route('/tour-stats').get(getTourStats);
 router
   .route('/monthly-plan/:year')
   .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getMonthlyPlan);
+
+router
+  .route('/tours-within/:distance/centre/:latlng/unit/:unit')
+  .get(getToursWithin);
+//{{URL}}api/v1/tours/tours-within/200/centre/34.111745,-118.113491/unit/mi
+
+//router.route('/distances/:latlng/unit/:unit').get(getDistances);
 
 // Protected + CRUD routes
 router

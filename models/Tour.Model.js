@@ -130,6 +130,7 @@ tourSchema.pre('save', function (next) {
 
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
+tourSchema.index({startLocation:  '2dsphere'})
 
 //virtual populate
 tourSchema.virtual('reviews',{
