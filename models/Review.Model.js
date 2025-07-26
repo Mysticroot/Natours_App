@@ -34,6 +34,8 @@ const ReviewSchema = new mongoose.Schema(
   },
 );
 
+ReviewSchema.index({ tour:1, user:1},{unique:true})
+
 ReviewSchema.pre(/^find/, function (next) {
   // this points to the current query
   //   this.populate({
@@ -94,4 +96,4 @@ ReviewSchema.post(/^findOneAnd/, async function () {
 });
 
 const Review = mongoose.model('Review', ReviewSchema);
-module.exports = Review;
+module.exports = Review; 

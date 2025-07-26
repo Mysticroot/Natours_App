@@ -39,6 +39,9 @@ const tourSchema = new mongoose.Schema(
     ratingsAverage: {
       type: Number,
       default: 4.5,
+      min: [1, 'Rating too low'],
+      max: [5, 'Rating too high'],
+      set: val=> Math.round(val*10)/10
     },
     ratingsQuantity: {
       type: Number,
@@ -77,44 +80,46 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    guides:[
+    guides: [
       {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
         required: true,
-      }
+      },
     ],
-    startLocation:{
-       type:{
+    startLocation: {
+      type: {
         type: String,
         default: 'Point',
         enum: ['Point'],
-       },
-        coordinates: [Number],
-        address: String,
-        description: String,
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
     },
     locations: [
-      { type: {
-        type: String,
-        default: 'Point',
-        enum: ['Point'],
-      },  
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
         coordinates: [Number],
         address: String,
         description: String,
         day: Number,
-      },]
-      // reviews:{
-      //   type: mongoose.Schema.ObjectId,
-      //   ref:'Review'
-      // }
+      },
+    ],
+    // reviews:{
+    //   type: mongoose.Schema.ObjectId,
+    //   ref:'Review'
+    // }
   },
 
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: false },
-  }
+  },
 );
 
 tourSchema.pre('save', function (next) {
